@@ -24,11 +24,12 @@ export const refreshToken = catchAsync(async (req: Request, res: Response, next:
         const error = new CustomError('Refresh token required', 401)
         return next(error)
     }
-    const newAccessToken = await refreshTokenService(refreshToken)
+    const {newAccessToken, user} = await refreshTokenService(refreshToken)
     cookieSaver(res, refreshToken);
     res.status(200).json({
         status: "success",
         message: "New AccessToken created",
-        newAccessToken
+        newAccessToken,
+        user,
     });
 })

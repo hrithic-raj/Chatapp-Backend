@@ -66,5 +66,8 @@ export const refreshTokenService = async(refreshToken: string)=>{
     const user = await User.findById(decoded.id);
     if(!user || user.refreshToken != refreshToken) throw new CustomError('Invalid refresh token', 403);
     const newAccessToken = generateAccessToken({ id: user._id });
-    return newAccessToken;
+    return {
+        newAccessToken,
+        user
+    };
 }

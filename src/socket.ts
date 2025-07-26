@@ -49,9 +49,9 @@ const initializeSocket = (server: HttpServer)=>{
                     $inc: { [`unreadMessages.${chatId}`]: 1 },
                 });
             }
-
+            const populatedMessage = await message.populate("sender", "name email profilePicture");
             // Emit to all sockets in the room
-            io.to(chatId).emit("receiveMessage", message);
+            io.to(chatId).emit("receiveMessage", populatedMessage);
         });
 
 
