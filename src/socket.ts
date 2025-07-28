@@ -28,6 +28,44 @@ const initializeSocket = (server: HttpServer)=>{
         //     // io.to(message.chatId).emit("receiveMessage", message);
         // });
 
+        // Chat creation handler
+        socket.on("createChat", async ({ user1, user2 }) => {
+            const existingChat = await Chat.findOne({
+                users: { $all: [user1, user2] }
+            });
+            
+            if (!existingChat) {
+                const newChat = await Chat.create({
+                    users: [user1, user2],
+                    createdBy: user1
+                });
+                
+                // Emit to both users
+                io.to(user1).to(user2).emit("newChat", newChat);
+            }
+        });
+
+        // Read receipt handler
+        socket.on("markMessagesAsRead", async ({ chatId, userId }) => {
+            await Message.updateMany(
+                { chat: chatId, sender: { $ne: userId }, read: false },
+                { $set: { read: true } }
+            );
+            
+            // Update unread count
+            await User.findByIdAndUpdate(userId, {
+                $unset: { [`unreadMessages.${chatId}`]: 1 }
+            });
+            
+            // Notify other participants
+            const chat = await Chat.findById(chatId);
+            chat?.users.forEach(user => {
+                if (user.toString() !== userId) {
+                    io.to(user.toString()).emit("messagesRead", { chatId, userId });
+                }
+            });
+        });
+
         socket.on("sendMessage", async (messageData) => {
             const { chatId, content, sender } = messageData;
 
