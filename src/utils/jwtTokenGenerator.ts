@@ -14,8 +14,8 @@ export const generateRefreshToken = (payload: object) => {
 export const cookieSaver = (res: Response, refreshToken: string)=>{
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: false, // Only works if you're using HTTPS
-        sameSite: 'strict', // For cross-site requests
+        secure: true, // Only works if you're using HTTPS
+        sameSite: 'none', // For cross-site requests
         maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 }
