@@ -23,11 +23,6 @@ const initializeSocket = (server: HttpServer)=>{
             socket.join(chatId);
         });
 
-        // socket.on("sendMessage", (message)=>{
-        //     console.log("frontmsg", message)
-        //     // io.to(message.chatId).emit("receiveMessage", message);
-        // });
-
         // Chat creation handler
         socket.on("createChat", async ({ user1, user2 }) => {
             const existingChat = await Chat.findOne({

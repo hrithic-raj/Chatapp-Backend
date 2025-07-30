@@ -9,7 +9,7 @@ import chatRouter from './routes/chatRoutes';
 import messageRouter from './routes/messageRoutes';
 import userRouter from './routes/userRoutes';
 import cookieParser from "cookie-parser";
-// import { initializeSocket } from "./socket";
+
 dotenv.config();
 
 const app = express();
