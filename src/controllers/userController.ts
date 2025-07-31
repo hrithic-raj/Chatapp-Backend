@@ -15,3 +15,9 @@ export const searchUsers = catchAsync(async (req: Request, res:Response)=>{
 
     res.json(users);
 });
+
+export const getUserProfile = catchAsync(async (req: Request, res:Response)=>{
+    const userId = req.user?._id;
+    const userData = await User.findById(userId).select("_id name profilePicture");
+    res.status(200).json(userData);
+})
