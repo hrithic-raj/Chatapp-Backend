@@ -4,6 +4,7 @@ export interface IUser extends Document{
     _id: mongoose.Types.ObjectId;
     name: string;
     email: string;
+    username: string;
     profilePicture?: string;
     googleId?: string;
     refreshToken?: string;
@@ -13,6 +14,7 @@ export interface IUser extends Document{
 const userSchema: Schema<IUser> = new Schema({
     name:{type:String, required:true, unique:true},
     email:{type:String, required:true, unique:true},
+    username:{type:String, unique:true},
     profilePicture:{type:String},
     googleId:{type:String},
     refreshToken:{type: String},
