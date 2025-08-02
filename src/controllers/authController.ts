@@ -5,31 +5,31 @@ import { cookieSaver } from "../utils/jwtTokenGenerator";
 import CustomError from "../utils/customErrorHandler";
 
 export const googleAuth = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const {credentialResponse} = req.body;
-    const {user, accessToken, refreshToken, newUser} = await googleAuthService(res, credentialResponse);
+    const { credentialResponse } = req.body;
+    const { user, accessToken, refreshToken, newUser } = await googleAuthService(res, credentialResponse);
     cookieSaver(res, refreshToken);
+    
     res.status(200).json({
         status: "success",
         message: "Login successful via Google",
-        user,
+        user: { ...user.toObject(), newUser },
         accessToken,
         refreshToken,
         newUser
     });
-})
+});
 
 export const refreshToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = req.cookies.refreshToken;
-    if(!refreshToken){
-        const error = new CustomError('Refresh token required', 401)
-        return next(error)
+    if (!refreshToken) {
+        return next(new CustomError('Refresh token required', 401));
     }
-    const {newAccessToken, user} = await refreshTokenService(refreshToken)
+    const { newAccessToken, user } = await refreshTokenService(refreshToken);
     cookieSaver(res, refreshToken);
     res.status(200).json({
         status: "success",
         message: "New AccessToken created",
         newAccessToken,
-        user,
+        user
     });
-})
+});
