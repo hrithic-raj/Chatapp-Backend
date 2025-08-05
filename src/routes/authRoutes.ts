@@ -1,8 +1,10 @@
 import express from 'express';
-import { googleAuth, refreshToken } from '../controllers/authController';
+import * as authController from '../controllers/authController';
+import { userAuth } from '../middleware/userAuth';
 
 const authRouter = express.Router();
 
-authRouter.post('/google', googleAuth);
-authRouter.post('/refresh-token', refreshToken);
+authRouter.post('/verify-token', userAuth, authController.verifyToken);
+authRouter.post('/google', authController.googleAuth);
+authRouter.post('/refresh-token', authController.refreshToken);
 export default authRouter;
