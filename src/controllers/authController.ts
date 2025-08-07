@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { Op } from "sequelize";
+// import { Op } from "sequelize";
 import catchAsync from "../utils/catchAsync";
 import User from "../models/userModel";
 import { googleAuthService, refreshTokenService } from "../services/authServices";
@@ -21,24 +21,22 @@ export const googleAuth = catchAsync(async (req: Request, res: Response, next: N
     });
 });
 
-export const verifyToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.user?._id;
-  const user = await User.findById(userId).select("_id name username email profilePicture newUser");
+export const verifyRefreshToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const {refreshToken} = req.body;
+  if (!refreshToken) {
+    return next(new CustomError('No token provided', 401));
+  }
 
-  console.log("user Found in verifyToken", user);
-  
+  const { user } = await refreshTokenService(refreshToken);
   if (!user) {
     return next(new CustomError('Invalid or expired token', 401));
   }
 
+
   res.status(200).json({
     status: "success",
-    user: {
-      id: user._id,
-      username: user.username,
-      email: user.email,
-      newUser: user.newUser
-    }
+    message: "RefreshToken is valid",
+    user
   });
 });
 
