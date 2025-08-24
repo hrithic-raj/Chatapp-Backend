@@ -45,8 +45,9 @@ export const getUserProfile = catchAsync(async (req: Request, res: Response) => 
     res.status(200).json(userData);
 });
 
-export const updateProfile = catchAsync(async (req , res: Response) => {
+export const updateProfile = catchAsync(async (req: Request, res: Response) => {
     const { name, username } = req.body;
+    console.log(name, username, "update profile")
     const user = await User.findById(req.user?._id);
     
     if (!user) {
@@ -55,10 +56,19 @@ export const updateProfile = catchAsync(async (req , res: Response) => {
 
     // Handle image upload
     if (req.file) {
-        const result = await cloudinary.uploader.upload(req.file.path, {
-            folder: 'chat-app/profiles',
-            width: 500,
-            crop: 'scale'
+        console.log('Received file upload:', req.file);
+        const result = await new Promise<any>((resolve, reject) => {
+            cloudinary.uploader.upload_stream(
+                {
+                    folder: 'chat-app/profiles',
+                    width: 500,
+                    crop: 'scale'
+                },
+                (error, result) => {
+                    if (error) return reject(error);
+                    resolve(result);
+                }
+            ).end(req.file.buffer);
         });
         user.profilePicture = result.secure_url;
     }
