@@ -82,7 +82,7 @@ export const refreshTokenService = async (refreshToken: string) => {
 
   const user = await User.findById(decoded.id);
 
-  if (!user || user.refreshToken !== refreshToken) {
+  if (!user) {
     throw new CustomError('Invalid refresh token', 403);
   }
 
