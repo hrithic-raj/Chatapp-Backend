@@ -61,13 +61,32 @@ export const googleAuthService = async(res: Response, credentialResponse : Crede
 }
 
 
-export const refreshTokenService = async(refreshToken: string)=>{
-    const decoded: any = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
-    const user = await User.findById(decoded.id);
-    if(!user || user.refreshToken != refreshToken) throw new CustomError('Invalid refresh token', 403);
-    const newAccessToken = generateAccessToken({ id: user._id });
-    return {
-        newAccessToken,
-        user
-    };
-}
+// export const refreshTokenService = async(refreshToken: string)=>{
+//     const decoded: any = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
+//     const user = await User.findById(decoded.id);
+//     if(!user || user.refreshToken != refreshToken) throw new CustomError('Invalid refresh token', 403);
+//     const newAccessToken = generateAccessToken({ id: user._id });
+//     return {
+//         newAccessToken,
+//         user
+//     };
+// }
+
+export const refreshTokenService = async (refreshToken: string) => {
+  let decoded: any;
+  try {
+    decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
+  } catch {
+    throw new CustomError('Refresh token expired', 403);
+  }
+
+  const user = await User.findById(decoded.id);
+
+  if (!user || user.refreshToken !== refreshToken) {
+    throw new CustomError('Invalid refresh token', 403);
+  }
+
+  const newAccessToken = generateAccessToken({ id: user._id });
+
+  return { newAccessToken, user };
+};
