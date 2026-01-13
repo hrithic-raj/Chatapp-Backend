@@ -11,14 +11,25 @@ export const generateRefreshToken = (payload: object) => {
     return jwt.sign(payload,  process.env.REFRESH_TOKEN_SECRET!, { expiresIn: '7d' });
 };
 
-export const cookieSaver = (res: Response, refreshToken: string)=>{
-    res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure: true, // Only works if you're using HTTPS
-        sameSite: 'lax', // For cross-site requests
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-}
+export const cookieSaver = (res: Response, refreshToken: string) => {
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    domain: '.filmista.online',
+    path: '/',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+};
+
+// export const cookieSaver = (res: Response, refreshToken: string)=>{
+//     res.cookie('refreshToken', refreshToken, {
+//         httpOnly: true,
+//         secure: true,
+//         sameSite: 'lax',
+//         maxAge: 7 * 24 * 60 * 60 * 1000,
+//     });
+// }
 
 // export const clearCookie = (res: Response)=>{
 //     res.clearCookie('refreshToken',{
