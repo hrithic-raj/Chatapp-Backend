@@ -21,6 +21,9 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+app.get("/api/health", (req, res) => {
+  res.status(200).send("OK");
+});
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/chats", chatRouter);
