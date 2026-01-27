@@ -41,7 +41,7 @@ export const verifyRefreshToken = catchAsync(async (req: Request, res: Response,
 });
 
 export const refreshToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const refreshToken = req.cookies.refreshToken;
+    const refreshToken = req.cookies.chat_refreshToken;
     if (!refreshToken) {
         return next(new CustomError('Refresh token required', 401));
     }
