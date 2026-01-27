@@ -12,7 +12,7 @@ export const generateRefreshToken = (payload: object) => {
 };
 
 export const cookieSaver = (res: Response, refreshToken: string) => {
-  res.cookie('refreshToken', refreshToken, {
+  res.cookie('chat_refreshToken', refreshToken, {
     httpOnly: true,
     secure: true,
     sameSite: 'none',

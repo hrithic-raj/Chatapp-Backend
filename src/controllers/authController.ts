@@ -22,7 +22,7 @@ export const googleAuth = catchAsync(async (req: Request, res: Response, next: N
 });
 
 export const verifyRefreshToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const refreshToken = req.cookies.refreshToken;
+  const refreshToken = req.cookies.chat_refreshToken;
   if (!refreshToken) {
     return next(new CustomError('No token provided', 401));
   }
